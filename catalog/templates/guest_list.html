@@ -1,0 +1,22 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+    <h1>Your Guest List</h1>
+
+    {% if user_guests %}
+        <p>You have {{ user_guests|length }} guest(s).</p>
+        <ul>
+            {% for guest in user_guests %}
+                <li>
+                    {{ guest.guest_name }} - {{ guest.guest_email }}
+                    <form method="post" action="{% url 'delete_guest' guest.guest_id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You have 0 guests.</p>
+    {% endif %}
+{% endblock %}

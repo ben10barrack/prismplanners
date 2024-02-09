@@ -1,0 +1,22 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}View Catering - {{ catering.service_name }}{% endblock %}
+
+{% block content %}
+  <h1>{{ catering.service_name }}</h1>
+  <p>Cuisine Type: {{ catering.cuisine_type }}</p>
+  <p>Number of People: {{ catering.number_of_people }}</p>
+  <p>Availability: {{ catering.get_availability_status_display }}</p>
+  <p>Rate per Person: {{ catering.rate_per_person }}</p>
+  
+  {% if catering.menu %}
+    <img src="{{ catering.menu.url }}" alt="Menu Image">
+  {% endif %}
+  
+  {% if catering.menu2 %}
+    <img src="{{ catering.menu2.url }}" alt="Second Menu Image">
+  {% endif %}
+  
+  <!-- Add more details if needed -->
+
+{% endblock %}

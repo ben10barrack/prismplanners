@@ -1,0 +1,16 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}All Available Catering Records{% endblock %}
+
+{% block content %}
+  <h1>All Available Catering Records</h1>
+  <ul>
+    {% for catering in available_caterings %}
+      <li>
+        <a href="{% url 'view_catering' catering_id=catering.catering_id %}">{{ catering.service_name }}</a>
+      </li>
+    {% empty %}
+      <li>No available catering records found.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

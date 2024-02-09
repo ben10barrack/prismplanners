@@ -1,0 +1,20 @@
+<!-- entertainment_single.html -->
+
+{% extends 'base_generic.html' %}
+
+{% block title %}{{ entertainment.get_entertainment_type_display }} - {{ entertainment.service_name }}{% endblock %}
+
+{% block content %}
+  <h1>{{ entertainment.get_entertainment_type_display }} - {{ entertainment.service_name }}</h1>
+  <p>Description: {{ entertainment.description }}</p>
+  <p>Contact: {{ entertainment.contact }}</p>
+  <p>Price: {{ entertainment.price }}</p>
+  <p>Availability: {{ entertainment.get_availability_status_display }}</p>
+
+  {% if entertainment.image %}
+    <img src="{{ entertainment.image.url }}" alt="{{ entertainment.get_entertainment_type_display }} Image">
+  {% endif %}
+
+  <a href="{% url 'edit_entertainment' entertainment_id=entertainment.entertainment_id %}">Edit</a>
+  <a href="{% url 'entertainment_list' %}">Back to Entertainment List</a>
+{% endblock %}

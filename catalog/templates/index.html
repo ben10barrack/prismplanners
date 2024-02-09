@@ -1,0 +1,26 @@
+{% extends "base_generic.html" %}
+
+{%  block title %} Prism Planners {% endblock %}
+
+{% block content %}
+
+    <h1>Prism Planners Home</h1>
+    <p>
+        Welcome to PrismPlanners, a website developed by
+        <em>Mozilla Developer Network</em>!
+    </p>
+    <h2>Dynamic content</h2>
+    <p>The website has the following record counts:</p>
+    <ul>
+        <li><strong>Venues:</strong> {{ num_venues }}</li>
+        <li><strong>Caterers:</strong> {{ num_caterings }}</li>
+        <li><strong>Entertainment Vendors:</strong>{{ num_entertainments }}</li>
+        <li><strong>Guest:</strong> {{ num_guests }}</li>
+        <li><strong>Transport Vendors:</strong> {{ num_transports }}</li>
+        <li><strong>Weddings:</strong> {{ num_weddings }}</li>
+    </ul>
+
+    <p>
+        You have visited this page {{ num_visits }} time {{ num_visits|pluralize }} .
+    </p>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}{{ transport.service_name }}{% endblock %}
+
+{% block content %}
+  <h1>{{ transport.service_name }}</h1>
+  <p>Description: {{ transport.description }}</p>
+  <p>Price: {{ transport.price }}</p>
+  <p>Availability: {{ transport.get_availability_status_display }}</p>
+  {% if transport.image %}
+    <img src="{{ transport.image.url }}" alt="{{ transport.service_name }} Image">
+  {% endif %}
+    {% if is_transporter %}
+    <a href="{% url 'edit_transport' transport_id=transport.transport_id%}">Edit</a>
+    <a href="{% url 'delete_transport' transport_id=transport.transport_id %}">Delete</a>
+    {% endif %}
+    {% if is_website_user %}
+    <a href="{% url 'view_all_transports' %}">Back to all car hire options</a>
+    {% endif %}
+{% endblock %}

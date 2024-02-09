@@ -1,0 +1,30 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}Catering Records{% endblock %}
+
+{% block content %}
+  <h1>Catering Records</h1>
+  <ul>
+    {% for catering in user_caterings %}
+      <li>
+        <h2>{{ catering.service_name }}</h2>
+        <p>Cuisine Type: {{ catering.cuisine_type }}</p>
+        <p>Number of People: {{ catering.number_of_people }}</p>
+        <p>Availability: {{ catering.get_availability_status_display }}</p>
+        <p>Rate per Person: {{ catering.rate_per_person }}</p>
+        {% if catering.menu %}
+          <img src="{{ catering.menu.url }}" alt="Menu Image">
+        {% endif %}
+        {% if catering.menu2 %}
+          <img src="{{ catering.menu2.url }}" alt="Second Menu Image">
+        {% endif %}
+        <a href="{% url 'edit_catering' catering_id=catering.catering_id %}">Edit</a>
+        <a href="{% url 'delete_catering' catering_id=catering.catering_id %}">Delete</a>
+      </li>
+    {% empty %}
+      <li>No catering records found.</li>
+        <br>
+        <a href="{% url 'create_catering' %}">Create record</a>
+    {% endfor %}
+  </ul>
+{% endblock %}

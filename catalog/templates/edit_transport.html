@@ -1,0 +1,15 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}
+    <title>Edit Transport Service</title>
+{% endblock %}
+
+{% block content %}
+  <h2>Edit Transport Service</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save Changes</button>
+  </form>
+  <a href="{% url 'my_cars' %}">Cancel</a>
+{% endblock %}

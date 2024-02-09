@@ -1,0 +1,15 @@
+<!-- delete_transport_confirm.html -->
+
+{% extends 'base_generic.html' %}
+
+{% block title %}Confirm Deletion{% endblock %}
+
+{% block content %}
+  <h1>Confirm Deletion</h1>
+  <p>Are you sure you want to delete the transport service '{{ transport.service_name }}'?</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Delete</button>
+    <a href="{% url 'my_cars' %}">Cancel</a>
+  </form>
+{% endblock %}

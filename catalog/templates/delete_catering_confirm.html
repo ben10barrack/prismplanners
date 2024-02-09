@@ -1,0 +1,14 @@
+<!-- delete_catering_confirm.html -->
+{% extends 'base_generic.html' %}
+
+{% block title %}Confirm Deletion{% endblock %}
+
+{% block content %}
+  <h1>Confirm Deletion</h1>
+  <p>Are you sure you want to delete the catering record "{{ catering.service_name }}"?</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Delete</button>
+    <a href="{% url 'catering_list' %}">Cancel</a>
+  </form>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}
+    <title>My Venues</title>
+{% endblock %}
+
+{% block content %}
+    <h1>My Venues</h1>
+
+    {% if user_venues %}
+        <ul>
+            {% for venue in user_venues %}
+                <li>
+                    <a href="{% url 'view_venue' venue.venue_id %}">{{ venue.venue_name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You have no venues yet.</p>
+    {% endif %}
+{% endblock %}

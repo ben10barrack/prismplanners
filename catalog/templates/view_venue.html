@@ -1,0 +1,21 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+  <h2>{{ venue.venue_name }}</h2>
+  <p><strong>Address:</strong> {{ venue.address }}</p>
+  <p><strong>Capacity:</strong> {{ venue.capacity }}</p>
+  <p><strong>Availability Status:</strong> {{ venue.get_availability_status_display }}</p>
+  <p><strong>Price:</strong> ${{ venue.price }}</p>
+  <p><strong>Email:</strong> {{ venue.email }}</p>
+
+  {% if venue.image %}
+    <img src="{{ venue.image.url }}" alt="{{ venue.venue_name }} Image">
+  {% endif %}
+    {% if is_website_user %}
+  <a href="{% url 'venue_list' %}">Back to Venue List</a>
+    {% endif %}
+    {% if is_venue_vendor %}
+    <a href="{% url 'edit_venue' venue_id=venue.venue_id %}">Edit Venue</a>
+    <a href="{% url 'delete_venue' venue_id=venue.venue_id %}">Delete Venue</a>
+    {% endif %}
+{% endblock %}

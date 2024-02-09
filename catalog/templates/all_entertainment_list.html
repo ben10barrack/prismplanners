@@ -1,0 +1,16 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}All Available Entertainment List{% endblock %}
+
+{% block content %}
+  <h1>All Available Entertainment List</h1>
+  {% if available_entertainments %}
+    <ul>
+      {% for entertainment in available_entertainments %}
+        <li><a href="{% url 'entertainment_single' entertainment_id=entertainment.entertainment_id %}">{{ entertainment.get_entertainment_type_display }} - {{ entertainment.service_name }}</a></li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No available entertainment records.</p>
+  {% endif %}
+{% endblock %}

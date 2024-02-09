@@ -1,0 +1,13 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}Edit Catering - {{ catering.service_name }}{% endblock %}
+
+{% block content %}
+  <h2>Edit Catering - {{ catering.service_name }}</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save Changes</button>
+  </form>
+  <a href="{% url 'catering_list' %}">Cancel</a>
+{% endblock %}

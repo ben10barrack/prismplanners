@@ -1,0 +1,16 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}
+    <title>Venue List</title>
+{% endblock %}
+
+{% block content %}
+    <h1>Venue List</h1>
+    <ul>
+        {% for venue in venues %}
+            <li>
+                <a href="{% url 'view_venue' venue_id=venue.venue_id %}">{{ venue.venue_name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

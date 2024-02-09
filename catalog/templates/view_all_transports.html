@@ -1,0 +1,14 @@
+<!-- view_transport.html -->
+
+{% extends 'base_generic.html' %}
+
+{% block title %}Transport Services{% endblock %}
+
+{% block content %}
+  <h1>All Transport Services</h1>
+  <ul>
+    {% for transport in all_transports %}
+      <li><a href="{% url 'view_transport' transport.transport_id %}">{{ transport.service_name }}</a></li>
+    {% endfor %}
+  </ul>
+{% endblock %}

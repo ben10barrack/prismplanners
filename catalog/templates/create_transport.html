@@ -1,0 +1,14 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}
+    <title>Create Transport</title>
+{% endblock %}
+
+{% block content %}
+    <h2>Create Transport</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Create Transport</button>
+    </form>
+{% endblock %}

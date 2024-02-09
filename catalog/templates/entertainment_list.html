@@ -1,0 +1,25 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}
+    <title>My Entertainment List</title>
+{% endblock %}
+
+{% block content %}
+    <h1>My Entertainment List</h1>
+
+    {% if user_entertainments %}
+        <ul>
+            {% for entertainment in user_entertainments %}
+                <li>
+                    <a href="{% url 'view_entertainment' entertainment_id=entertainment.entertainment_id %}">
+                        {{ entertainment.get_entertainment_type_display }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You have no entertainment services yet.</p>
+        <br>
+        <a href="{% url 'create_entertainment' %}"> Register service</a>
+    {% endif %}
+{% endblock %}

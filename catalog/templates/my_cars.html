@@ -1,0 +1,21 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}
+    <title>My Cars</title>
+{% endblock %}
+
+{% block content %}
+    <h1>My Cars</h1>
+
+    {% if user_transports %}
+        <ul>
+            {% for transport in user_transports %}
+                <li>
+                    <a href="{% url 'view_transport' transport_id=transport.transport_id %}">{{ transport.service_name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You have no cars yet.</p>
+    {% endif %}
+{% endblock %}
