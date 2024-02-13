@@ -1,0 +1,14 @@
+<!-- book_venue.html -->
+
+{% extends 'base_generic.html' %}
+
+{% block title %}Book Venue{% endblock %}
+
+{% block content %}
+  <h2>Book Venue</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Book Venue</button>
+  </form>
+{% endblock %}

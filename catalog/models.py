@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import User
+from decimal import Decimal
 
 
 class Venue(models.Model):
@@ -63,7 +64,7 @@ class Entertainment(models.Model):
     description = models.TextField()
     contact = models.CharField(max_length=255)
     availability_status = models.CharField(max_length=1, choices=AVAILABILITY_CHOICES, default='A')
-    price = models.CharField(max_length=50)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
         return f"{self.get_entertainment_type_display()} - {self.entertainment_id}"
@@ -128,18 +129,70 @@ class Wedding(models.Model):
         super().save(*args, **kwargs)
 
 
-class VenueBooking(models.Model):
+class Booking(models.Model):
     STATUS_CHOICES = [
         ('P', 'Pending'),
         ('A', 'Accepted'),
         ('R', 'Rejected'),
     ]
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
     venue = models.ForeignKey(Venue, on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    booking_date = models.DateField()
+    num_guests = models.PositiveIntegerField()
+    contact_info = models.CharField(max_length=255)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='P')
 
-    def __str__(self):
-        return f"{self.user.username} - {self.venue.venue_name}"
 
+class BookCatering(models.Model):
+    STATUS_CHOICES = [
+        ('P', 'Pending'),
+        ('A', 'Accepted'),
+        ('R', 'Rejected'),
+    ]
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
+    catering = models.ForeignKey(Catering, on_delete=models.CASCADE)
+    booking_date = models.DateField()
+    num_guests = models.PositiveIntegerField()
+    contact_info = models.CharField(max_length=255)
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='P')
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # Total price column
+
+    def calculate_total_price(self):
+        return self.num_guests * self.catering.rate_per_person
+
+    def save(self, *args, **kwargs):
+        self.total_price = self.calculate_total_price()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Booking for {self.catering.service_name}"
+
+
+class BookEntertainment(models.Model):
+    STATUS_CHOICES = [
+        ('P', 'Pending'),
+        ('A', 'Accepted'),
+        ('R', 'Rejected'),
+    ]
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
+    entertainment = models.ForeignKey(Entertainment, on_delete=models.CASCADE)
+    booking_date = models.DateField()
+    duration_hours = models.PositiveIntegerField()  # Duration in hours
+    contact_info = models.CharField(max_length=255)
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='P')
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    def calculate_total_price(self):
+        # Calculate total price based on duration and price per hour of the entertainment service
+        return Decimal(self.duration_hours) * self.entertainment.price
+
+    def save(self, *args, **kwargs):
+        # Calculate total price before saving and convert to decimal
+        self.total_price = self.calculate_total_price()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Booking for {self.entertainment.service_name}"

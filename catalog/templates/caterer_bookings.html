@@ -1,0 +1,30 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}Caterer Bookings{% endblock %}
+
+{% block content %}
+  <h1>Caterer Bookings</h1>
+  <ul>
+    {% for booking in caterer_bookings %}
+      <li>Booking for: {{ booking.catering.service_name }}</li>
+      <li>Booking Date: {{ booking.booking_date }}</li>
+      <li>Number of Guests: {{ booking.num_guests }}</li>
+      <li>Contact Information: {{ booking.contact_info }}</li>
+      <li>Status: {{ booking.get_status_display }}</li>
+      <li>Availability: {{ booking.catering.get_availability_status_display }}</li>
+      <li>Total Price: {{ booking.total_price }}</li> <!-- Display total price -->
+      <form method="post" action="{% url 'update_booking_status' booking.id %}">
+        {% csrf_token %}
+        <select name="status">
+          <option value="P">Pending</option>
+          <option value="A">Accepted</option>
+          <option value="R">Rejected</option>
+        </select>
+        <button type="submit">Update Status</button>
+      </form>
+      <hr>
+    {% empty %}
+      <li>No bookings found.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

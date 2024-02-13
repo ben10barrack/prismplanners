@@ -1,0 +1,13 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}Catering Booking Confirmation{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <h1 class="text-center">Catering Booking Confirmation</h1>
+    <p class="text-center">Your catering booking has been confirmed!
+        <br>
+     <a href="{% url 'user_bookings' %}">Booked Catering</a>
+    <!-- You can customize this confirmation message as needed -->
+  </div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}Your Bookings{% endblock %}
+
+{% block content %}
+  <h1>Your Bookings</h1>
+  <ul>
+    {% for booking in user_bookings %}
+      <li>Booking for: {{ booking.catering.service_name }}</li>
+      <li>Booking Date: {{ booking.booking_date }}</li>
+      <li>Number of Guests: {{ booking.num_guests }}</li>
+      <li>Contact Information: {{ booking.contact_info }}</li>
+      <li>Status: {{ booking.get_status_display }}</li>
+      <li>Total Price: {{ booking.total_price }}</li>  <!-- Display total price here -->
+      <hr>
+    {% empty %}
+      <li>No bookings found.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

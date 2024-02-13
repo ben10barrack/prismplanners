@@ -1,0 +1,12 @@
+<!-- booking_confirmation.html -->
+{% extends 'base_generic.html' %}
+
+{% block title %}Venue Booking{% endblock %}
+
+{% block content %}
+  <h1>Venue Booking</h1>
+  <p>Your venue booking has been confirmed!</p>
+    <br>
+    <a href="{% url 'booked_venues' %}">Booked Venues</a>
+  <!-- You can customize this confirmation message as needed -->
+{% endblock %}

@@ -32,6 +32,9 @@
                         <a class="nav-link" href="{% url 'venue_home' %}">My Home</a>
                              </li>
                               <li class="nav-item">
+                        <a class="nav-link" href="{% url 'vendor_bookings' %}">My Booked Venues</a>
+                             </li>
+                              <li class="nav-item">
                         <a class="nav-link" href="{% url 'create_venue' %}">Add Venue</a>
                               </li>
                          {% endif %}
@@ -43,6 +46,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#">Plan Wedding</a>
                     </li>
+                          <li class="nav-item">
+                            <a href="{% url 'booked_venues' %}">Booked Venues</a>
+                          </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'add_guest' %}">Add Guest</a>
                     </li>
@@ -68,11 +74,17 @@
                             <li class="nav-item">
                         <a class="nav-link" href="{% url 'entertainment_home' %}">My Home</a>
                              </li>
+                            <li class="nav-item">
+                        <a class="nav-link" href="{% url 'entertainer_bookings' %}">My Booked services</a>
+                             </li>
                         {% endif %}
                         {% if is_caterer %}
                              <li class="nav-item">
                         <a class="nav-link" href="{% url 'catering_home' %}">My Home</a>
                              </li>
+                            <li class="nav-item">
+                        <a class="nav-link" href="{% url 'caterer_bookings' %}">Caterer Bookings</a>
+                            </li>
                          {% endif %}
                     <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}?next={{ request.path }}">Logout</a></li>
                     {% else %}

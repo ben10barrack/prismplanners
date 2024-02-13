@@ -16,7 +16,7 @@
   {% if catering.menu2 %}
     <img src="{{ catering.menu2.url }}" alt="Second Menu Image">
   {% endif %}
-  
-  <!-- Add more details if needed -->
+    <br>
+     <a href="{% url 'book_catering' catering_id=catering.catering_id %}" class="btn btn-primary">Book Catering</a>
 
 {% endblock %}

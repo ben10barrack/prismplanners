@@ -1,0 +1,38 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}Book Catering{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <h1 class="text-center">Book Catering</h1>
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <form method="post" class="mt-4">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="booking_date">Booking Date</label>
+            {{ form.booking_date }}
+          </div>
+          <div class="form-group">
+            <label for="num_guests">Number of Guests</label>
+            {{ form.num_guests }}
+          </div>
+          <div class="form-group">
+            <label for="contact_info">Contact Information</label>
+            {{ form.contact_info }}
+          </div>
+          <button type="submit" class="btn btn-primary">Book</button>
+        </form>
+      </div>
+    </div>
+    <div class="row justify-content-center mt-4">
+      <div class="col-md-6">
+        <h2 class="text-center">Catering Details</h2>
+        <p><strong>Service Name:</strong> {{ catering.service_name }}</p>
+        <p><strong>Cuisine Type:</strong> {{ catering.cuisine_type }}</p>
+        <p><strong>Number of People:</strong> {{ catering.number_of_people }}</p>
+        <p><strong>Rate per Person:</strong> {{ catering.rate_per_person }}</p>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,21 @@
+<!-- booked_venues.html -->
+{% extends 'base_generic.html' %}
+
+{% block title %}Booked Venues{% endblock %}
+
+{% block content %}
+  <h1>Booked Venues</h1>
+  <ul>
+    {% for booking in user_bookings %}
+      <li>
+        <strong>Venue:</strong> {{ booking.venue.venue_name }}<br>
+        <strong>Status:</strong> {{ booking.get_status_display }}<br>
+        <strong>Price:</strong> ${{ booking.venue.price }}<br>
+        <strong>Date:</strong> {{ booking.booking_date }}
+      </li>
+      <!-- Add more details about the booking as needed -->
+    {% empty %}
+      <li>No booked venues found.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

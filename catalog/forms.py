@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User, Group
-from .models import Guest, Venue, Transport, Entertainment, Catering
+from .models import Guest, Venue, Transport, Entertainment, Catering, Booking, BookCatering, BookEntertainment
 
 
 class RegistrationForm(UserCreationForm):
@@ -55,3 +55,31 @@ class CateringForm(forms.ModelForm):
     class Meta:
         model = Catering
         fields = ['service_name', 'cuisine_type', 'number_of_people', 'availability_status', 'rate_per_person', 'menu', 'menu2']
+
+
+class BookingForm(forms.ModelForm):
+    class Meta:
+        model = Booking
+        fields = ['booking_date', 'num_guests', 'contact_info']
+        
+        
+class BookCateringForm(forms.ModelForm):
+    class Meta:
+        model = BookCatering  # Use the BookCatering model
+        fields = ['booking_date', 'num_guests', 'contact_info']  # Exclude catering field as it's passed in the view
+        labels = {
+            'booking_date': 'Booking Date',
+            'num_guests': 'Number of Guests',
+            'contact_info': 'Contact Information'
+        }
+
+
+class BookEntertainmentForm(forms.ModelForm):
+    class Meta:
+        model = BookEntertainment
+        fields = ['booking_date', 'duration_hours', 'contact_info']
+        labels = {
+            'booking_date': 'Booking Date',
+            'duration_hours': 'Duration (hours)',
+            'contact_info': 'Contact Information',
+        }

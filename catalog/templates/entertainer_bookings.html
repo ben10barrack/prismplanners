@@ -1,0 +1,50 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}Entertainer Bookings{% endblock %}
+
+{% block content %}
+<h1>Entertainer Bookings</h1>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Entertainment Service</th>
+      <th scope="col">Booking Date</th>
+      <th scope="col">Duration (hours)</th>
+      <th scope="col">Contact Information</th>
+      <th scope="col">Status</th>
+      <th scope="col">Availability Status</th>  <!-- New column -->
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for booking in entertainer_bookings %}
+    <tr>
+      <th scope="row">{{ forloop.counter }}</th>
+      <td>{{ booking.entertainment }}</td>
+      <td>{{ booking.booking_date }}</td>
+      <td>{{ booking.duration_hours }}</td>
+      <td>{{ booking.contact_info }}</td>
+      <td>{{ booking.get_status_display }}</td>
+      <td>{{ booking.entertainment.availability_status }}</td>  <!-- Display availability status -->
+      <td>
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="booking_id" value="{{ booking.id }}">
+          <select name="new_status">
+            <option value="P" {% if booking.status == 'P' %}selected{% endif %}>Pending</option>
+            <option value="A" {% if booking.status == 'A' %}selected{% endif %}>Accepted</option>
+            <option value="R" {% if booking.status == 'R' %}selected{% endif %}>Rejected</option>
+          </select>
+          <button type="submit">Update</button>
+        </form>
+      </td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="8">No bookings found.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

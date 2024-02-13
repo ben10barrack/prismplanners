@@ -1,0 +1,20 @@
+<!-- enta_booking_confirmation.html -->
+
+{% extends 'base_generic.html' %}
+
+{% block title %}Booking Confirmation{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <h1 class="text-center">Booking Confirmation</h1>
+      <p class="lead text-center">Your entertainment booking has been confirmed!</p>
+      <p class="text-center">Thank you for choosing our service.</p>
+      <p class="text-center">
+        <a href="{% url 'my_ent_bookings' %}" class="btn btn-primary">My entertainment bookings</a>
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

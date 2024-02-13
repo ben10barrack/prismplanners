@@ -1,0 +1,28 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}Vendor Bookings{% endblock %}
+
+{% block content %}
+  <h1>Vendor Bookings</h1>
+  <ul>
+    {% for booking in vendor_bookings %}
+      <li>
+        <strong>Venue:</strong> {{ booking.venue.venue_name }}<br>
+        <strong>Status:</strong> {{ booking.get_status_display }}<br>
+        <strong>Date:</strong> {{ booking.booking_date }}<br>
+        <strong>Availability:</strong> {{ booking.venue.get_availability_status_display }}<br>
+        <form action="{% url 'change_booking_status' booking_id=booking.pk %}" method="post">
+          {% csrf_token %}
+          <select name="status">
+            <option value="P" {% if booking.status == 'P' %} selected {% endif %}>Pending</option>
+            <option value="A" {% if booking.status == 'A' %} selected {% endif %}>Accepted</option>
+            <option value="R" {% if booking.status == 'R' %} selected {% endif %}>Rejected</option>
+          </select>
+          <input type="submit" value="Update Status">
+        </form>
+      </li>
+    {% empty %}
+      <li>No bookings found.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

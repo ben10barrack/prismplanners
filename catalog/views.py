@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from django.shortcuts import render
-from .models import Venue, Catering, Entertainment, Guest, Transport, Wedding
+from .models import Venue, Catering, Entertainment, Guest, Transport, Wedding, Booking, BookCatering, BookEntertainment
 from django.db.models import Count
 from django.shortcuts import render, redirect
-from .forms import RegistrationForm
+from .forms import RegistrationForm, BookEntertainmentForm
 from .forms import GuestForm
 from django.shortcuts import get_object_or_404, redirect
 from .forms import VenueForm
@@ -12,6 +12,8 @@ from .forms import EntertainmentForm
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from .forms import CateringForm
+from .forms import BookingForm, BookCateringForm
+from django.db.models import F, ExpressionWrapper, fields
 
 
 # Create your views here.
@@ -108,7 +110,8 @@ def create_venue(request):
 
 
 def venue_list(request):
-    venues = Venue.objects.all()
+    # Filter venues with availability status as 'Available'
+    venues = Venue.objects.filter(availability_status='A')
     return render(request, 'venue_list.html', {'venues': venues})
 
 
@@ -395,9 +398,206 @@ def view_catering(request, catering_id):
 def entertainment_single(request, entertainment_id):
     # Get the entertainment record with the given ID or return a 404 error if not found
     entertainment = get_object_or_404(Entertainment, entertainment_id=entertainment_id)
+    is_entertainer = request.user.is_authenticated and request.user.groups.filter(name='Entertainer').exists()
+    is_website_user = request.user.is_authenticated and request.user.groups.filter(name='Website Users').exists()
 
     context = {
         'entertainment': entertainment,
+        'is_entertainer': is_entertainer,
+        'is_website_user': is_website_user,
     }
 
     return render(request, 'entertainment_single.html', context=context)
+
+
+def delete_entertainment(request, entertainment_id):
+    # Retrieve the entertainment record to be deleted
+    entertainment = get_object_or_404(Entertainment, pk=entertainment_id)
+
+    if request.method == 'POST':
+        # Handle the HTTP POST request to delete the record
+        entertainment.delete()
+        # Redirect the user to an appropriate page after deletion
+        return redirect('entertainment_list')  # Redirect to the entertainment list page after deletion
+    else:
+        # If the request method is not POST, render an error or redirect as needed
+        pass
+
+
+def book_venue(request, venue_id):
+    venue = Venue.objects.get(pk=venue_id)  # Retrieve the venue object
+
+    if request.method == 'POST':
+        form = BookingForm(request.POST)
+        if form.is_valid():
+            booking = form.save(commit=False)
+            booking.user = request.user
+            booking.venue = venue  # Assign the venue object to the booking
+            booking.save()
+            return redirect('booking_confirmation')  # Redirect to a confirmation page
+    else:
+        form = BookingForm()
+
+    return render(request, 'book_venue.html', {'form': form, 'venue': venue})
+
+
+def booking_confirmation(request):
+    return render(request, 'venue_booking_confirmation.html')
+
+
+def booked_venues(request):
+    # Retrieve bookings associated with the logged-in user
+    user_bookings = Booking.objects.filter(user=request.user)
+
+    context = {
+        'user_bookings': user_bookings,
+    }
+
+    return render(request, 'booked_venues.html', context)
+
+
+def vendor_bookings(request):
+    # Retrieve bookings associated with venues owned by the current vendor
+    vendor_bookings = Booking.objects.filter(venue__user_id=request.user)
+
+    context = {
+        'vendor_bookings': vendor_bookings,
+    }
+
+    return render(request, 'vendor_bookings.html', context)
+
+
+def change_booking_status(request, booking_id):
+    booking = get_object_or_404(Booking, pk=booking_id)
+
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        booking.status = new_status
+
+        # If the new status is accepted, update the availability status of the venue
+        if new_status == 'A':
+            venue = booking.venue
+            venue.availability_status = 'N'  # Update availability to 'Not Available'
+            venue.save()
+
+        booking.save()
+        return redirect('vendor_bookings')
+
+    return redirect('vendor_bookings')
+
+
+def book_catering(request, catering_id):
+    catering = get_object_or_404(Catering, pk=catering_id)
+
+    if request.method == 'POST':
+        form = BookCateringForm(request.POST)
+        if form.is_valid():
+            booking = form.save(commit=False)
+            booking.user = request.user
+            booking.catering = catering
+            booking.save()
+            return redirect('catering_booking_confirmation')
+    else:
+        form = BookCateringForm()
+
+    return render(request, 'book_catering.html', {'form': form, 'catering': catering})
+
+
+def catering_booking_confirmation(request):
+    return render(request, 'catering_booking_confirmation.html')
+
+
+def user_bookings(request):
+    # Retrieve bookings associated with the logged-in user
+    user_bookings = BookCatering.objects.filter(user=request.user)
+
+    context = {
+        'user_bookings': user_bookings,
+    }
+
+    return render(request, 'user_bookings.html', context)
+
+
+def caterer_bookings(request):
+    # Retrieve booked caterings associated with the caterer
+    caterer_bookings = BookCatering.objects.filter(catering__user_id=request.user)
+
+    context = {
+        'caterer_bookings': caterer_bookings,
+    }
+
+    return render(request, 'caterer_bookings.html', context)
+
+
+def update_booking_status(request, booking_id):
+    booking = get_object_or_404(BookCatering, pk=booking_id)
+
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        if new_status == 'A':  # Check if the new status is "Accepted"
+            booking.status = new_status
+            booking.catering.availability_status = 'N'  # Change availability status to "Not Available"
+            booking.catering.save()  # Save the changes to the catering object
+        else:
+            booking.status = new_status
+        booking.save()
+
+    return redirect('caterer_bookings')
+
+
+def book_entertainment(request, entertainment_id):
+    entertainment = get_object_or_404(Entertainment, pk=entertainment_id)
+
+    if request.method == 'POST':
+        form = BookEntertainmentForm(request.POST)
+        if form.is_valid():
+            booking = form.save(commit=False)
+            booking.entertainment = entertainment  # Assign the entertainment object to the booking
+            booking.user = request.user  # Capture the ID of the booking user
+            booking.save()
+            return redirect('enta_booking_confirmation')  # Redirect to a confirmation page
+    else:
+        form = BookEntertainmentForm()
+
+    return render(request, 'book_entertainment.html', {'form': form, 'entertainment': entertainment})
+
+
+def enta_booking_confirmation(request):
+    return render(request, 'enta_booking_confirmation.html')
+
+
+def my_entertainment_bookings(request):
+    # Retrieve the entertainment bookings associated with the logged-in user
+    user_ent_bookings = BookEntertainment.objects.filter(user=request.user)
+
+    context = {
+        'user_ent_bookings': user_ent_bookings,
+    }
+    return render(request, 'my_ent_bookings.html', context)
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import BookEntertainment
+
+def entertainer_bookings(request):
+    # Retrieve bookings for the current entertainer (assuming the entertainer's ID is stored in request.user)
+    entertainer_bookings = BookEntertainment.objects.filter(entertainment__user_id=request.user)
+
+    if request.method == 'POST':
+        # Handle form submission to update booking status
+        booking_id = request.POST.get('booking_id')
+        new_status = request.POST.get('new_status')
+        booking = get_object_or_404(BookEntertainment, pk=booking_id)
+
+        # Check if status is changing to 'Accepted'
+        if new_status == 'A' and booking.status != 'A':
+            # Change availability status of the associated entertainment to 'Not Available'
+            booking.entertainment.availability_status = 'N'
+            booking.entertainment.save()
+
+        # Update booking status
+        booking.status = new_status
+        booking.save()
+        return redirect('entertainer_bookings')
+
+    return render(request, 'entertainer_bookings.html', {'entertainer_bookings': entertainer_bookings})

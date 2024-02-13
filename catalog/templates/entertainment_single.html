@@ -14,7 +14,19 @@
   {% if entertainment.image %}
     <img src="{{ entertainment.image.url }}" alt="{{ entertainment.get_entertainment_type_display }} Image">
   {% endif %}
-
+  {% if is_entertainer %}
   <a href="{% url 'edit_entertainment' entertainment_id=entertainment.entertainment_id %}">Edit</a>
+   <form action="{% url 'delete_entertainment' entertainment_id=entertainment.entertainment_id %}" method="post" onsubmit="return confirm('Are you sure you want to delete this entertainment record?');">
+      {% csrf_token %}
+      <input type="submit" value="Delete">
+    </form>
   <a href="{% url 'entertainment_list' %}">Back to Entertainment List</a>
+    {% endif %}
+    {% if is_website_user %}
+     <a href="{% url 'all_entertainment_list' %}">Back to Entertainment List</a>
+        <form action="{% url 'book_entertainment' entertainment_id=entertainment.entertainment_id %}" method="post">
+    {% csrf_token %}
+    <input type="submit" value="Book">
+  </form>
+    {% endif %}
 {% endblock %}

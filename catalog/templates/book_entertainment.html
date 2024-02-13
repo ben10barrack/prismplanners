@@ -1,0 +1,31 @@
+<!-- book_entertainment.html -->
+
+{% extends 'base_generic.html' %}
+
+{% block title %}Book Entertainment{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <h1 class="text-center">Book Entertainment</h1>
+     <form method="post" >
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="id_booking_date" class="form-label">Booking Date</label>
+          {{ form.booking_date }}
+        </div>
+        <div class="mb-3">
+          <label for="id_duration_hours" class="form-label">Duration (hours)</label>
+          {{ form.duration_hours }}
+        </div>
+        <div class="mb-3">
+          <label for="id_contact_info" class="form-label">Contact Information</label>
+          {{ form.contact_info }}
+        </div>
+        <button type="submit" class="btn btn-primary">Book</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
