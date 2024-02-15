@@ -16,5 +16,6 @@
     {% endif %}
     {% if is_website_user %}
     <a href="{% url 'view_all_transports' %}">Back to all car hire options</a>
+    <a href="{% url 'book_transport' transport_id=transport.pk %}" class="btn btn-primary">Book Now</a>
     {% endif %}
 {% endblock %}

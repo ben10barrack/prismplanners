@@ -1,0 +1,12 @@
+<!-- car_booking_confirmation.html -->
+{% extends 'base_generic.html' %}
+
+{% block title %}Car Booking Confirmation{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1>Car Booking Confirmation</h1>
+  <p>Your car booking has been confirmed. Thank you!</p>
+   <p><a href="{% url 'user_booked_cars' %}">View Your Booked Cars</a></p>
+</div>
+{% endblock %}

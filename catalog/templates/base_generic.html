@@ -41,10 +41,7 @@
                         <li class="nav-item">User: {{ user.get_username }}</li>
                         {% if is_website_user %}
                      <li class="nav-item">
-                        <a class="nav-link" href="#">My Wedding</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Plan Wedding</a>
+                        <a class="nav-link" href="{% url 'my_wedding' %}" >My Wedding</a>
                     </li>
                           <li class="nav-item">
                             <a href="{% url 'booked_venues' %}">Booked Venues</a>

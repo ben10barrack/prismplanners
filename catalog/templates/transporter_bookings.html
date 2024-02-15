@@ -1,0 +1,51 @@
+<!-- transporter_bookings.html -->
+{% extends 'base_generic.html' %}
+
+{% block title %}Transporter Bookings{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1>Transporter Bookings</h1>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Transport Service</th>
+        <th scope="col">Booking Date</th>
+        <th scope="col">Number of Cars</th>
+        <th scope="col">Status</th>
+        <th scope="col">Availability</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for booking in transporter_bookings %}
+      <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td>{{ booking.transport.service_name }}</td>
+        <td>{{ booking.booking_date }}</td>
+        <td>{{ booking.num_cars }}</td>
+        <td>{{ booking.get_status_display }}</td>
+        <td>{{ booking.transport.get_availability_status_display }}</td>
+        <td>
+          <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="booking_id" value="{{ booking.id }}">
+            <select name="new_status">
+              <option value="P" {% if booking.status == 'P' %}selected{% endif %}>Pending</option>
+              <option value="A" {% if booking.status == 'A' %}selected{% endif %}>Accepted</option>
+              <option value="R" {% if booking.status == 'R' %}selected{% endif %}>Rejected</option>
+            </select>
+            <button type="submit">Update</button>
+          </form>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="7">No bookings found.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

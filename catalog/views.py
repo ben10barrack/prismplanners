@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from django.shortcuts import render
-from .models import Venue, Catering, Entertainment, Guest, Transport, Wedding, Booking, BookCatering, BookEntertainment
+from .models import Venue, Catering, Entertainment, Guest, Transport, Wedding, Booking, BookCatering, BookEntertainment, \
+    BookTransport
 from django.db.models import Count
 from django.shortcuts import render, redirect
-from .forms import RegistrationForm, BookEntertainmentForm
+from .forms import RegistrationForm, BookEntertainmentForm, BookTransportForm
 from .forms import GuestForm
 from django.shortcuts import get_object_or_404, redirect
 from .forms import VenueForm
@@ -579,6 +580,7 @@ def my_entertainment_bookings(request):
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import BookEntertainment
 
+
 def entertainer_bookings(request):
     # Retrieve bookings for the current entertainer (assuming the entertainer's ID is stored in request.user)
     entertainer_bookings = BookEntertainment.objects.filter(entertainment__user_id=request.user)
@@ -601,3 +603,77 @@ def entertainer_bookings(request):
         return redirect('entertainer_bookings')
 
     return render(request, 'entertainer_bookings.html', {'entertainer_bookings': entertainer_bookings})
+
+
+def book_transport(request, transport_id):
+    transport = Transport.objects.get(pk=transport_id)
+
+    if request.method == 'POST':
+        form = BookTransportForm(request.POST)
+        if form.is_valid():
+            booking = form.save(commit=False)
+            booking.transport = transport
+            booking.user = request.user
+            booking.save()
+            return redirect('car_booking_confirmation')  # Redirect to booking confirmation page
+    else:
+        form = BookTransportForm()
+
+    return render(request, 'book_transport.html', {'form': form, 'transport': transport})
+
+
+def car_booking_confirmation_view(request):
+    return render(request, 'car_booking_confirmation.html')
+
+
+def user_bookings_view(request):
+    # Retrieve the user's bookings
+    user_bookings = BookTransport.objects.filter(user_id=request.user)
+    return render(request, 'user_booked_cars.html', {'user_bookings': user_bookings})
+
+
+def transporter_bookings(request):
+    # Retrieve bookings for the current transporter
+    transporter_bookings = BookTransport.objects.filter(transport__user_id=request.user)
+
+    if request.method == 'POST':
+        # Handle form submission to update booking status
+        booking_id = request.POST.get('booking_id')
+        new_status = request.POST.get('new_status')
+        booking = get_object_or_404(BookTransport, pk=booking_id)
+
+        # Check if status is changing to 'Accepted'
+        if new_status == 'A' and booking.status != 'A':
+            # Change availability status of the associated transport service to 'Not Available'
+            booking.transport.availability_status = 'N'
+            booking.transport.save()
+
+        # Update booking status
+        booking.status = new_status
+        booking.save()
+        return redirect('transporter_bookings')
+
+    return render(request, 'transporter_bookings.html', {'transporter_bookings': transporter_bookings})
+
+
+def my_wedding(request):
+    # Retrieve bookings from different tables with status 'Accepted'
+    venue_bookings = Booking.objects.filter(user=request.user, status='A')
+    entertainment_bookings = BookEntertainment.objects.filter(user=request.user, status='A')
+    transport_bookings = BookTransport.objects.filter(user=request.user, status='A')
+    catering_bookings = BookCatering.objects.filter(user=request.user, status='A')
+
+    # Combine all accepted bookings into a single list
+    all_bookings = list(venue_bookings) + list(entertainment_bookings) + list(transport_bookings) + list(catering_bookings)
+
+    # Calculate total price
+    total_price = sum(booking.venue.price if hasattr(booking, 'venue') else
+                      booking.entertainment.price if hasattr(booking, 'entertainment') else
+                      booking.transport.price if hasattr(booking, 'transport') else
+                      booking.total_price for booking in all_bookings)
+
+    # Pass accepted bookings and total price to the template
+    return render(request, 'my_wedding.html', {
+        'user_bookings': all_bookings,
+        'total_price': total_price
+    })

@@ -1,0 +1,27 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}Book Transport{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1 class="mt-5 mb-4">Book Transport</h1>
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <form method="post" class="needs-validation" novalidate>
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="{{ form.booking_date.id_for_label }}" class="form-label">Booking Date</label>
+          {{ form.booking_date }}
+          <div class="invalid-feedback">{{ form.booking_date.errors }}</div>
+        </div>
+        <div class="mb-3">
+          <label for="{{ form.num_cars.id_for_label }}" class="form-label">Number of Cars</label>
+          {{ form.num_cars }}
+          <div class="invalid-feedback">{{ form.num_cars.errors }}</div>
+        </div>
+        <button type="submit" class="btn btn-primary">Book</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

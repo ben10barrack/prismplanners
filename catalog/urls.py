@@ -56,4 +56,9 @@ urlpatterns += [
     path('enta_booking_confirmation/', views.enta_booking_confirmation, name='enta_booking_confirmation'),
     path('my-entertainment-bookings/', views.my_entertainment_bookings, name='my_ent_bookings'),
     path('entertainer-bookings/', views.entertainer_bookings, name='entertainer_bookings'),
+    path('book-transport/<int:transport_id>/', views.book_transport, name='book_transport'),
+    path('car-booking-confirmation/', views.car_booking_confirmation_view, name='car_booking_confirmation'),
+    path('user-booked-cars/', views.user_bookings_view, name='user_booked_cars'),
+    path('transporter-bookings/', views.transporter_bookings, name='transporter_bookings'),
+    path('my-wedding/', views.my_wedding, name='my_wedding'),
 ]

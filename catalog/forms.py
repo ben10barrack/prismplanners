@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User, Group
-from .models import Guest, Venue, Transport, Entertainment, Catering, Booking, BookCatering, BookEntertainment
+from .models import Guest, Venue, Transport, Entertainment, Catering, Booking, BookCatering, BookEntertainment, \
+    BookTransport
 
 
 class RegistrationForm(UserCreationForm):
@@ -82,4 +83,14 @@ class BookEntertainmentForm(forms.ModelForm):
             'booking_date': 'Booking Date',
             'duration_hours': 'Duration (hours)',
             'contact_info': 'Contact Information',
+        }
+
+
+class BookTransportForm(forms.ModelForm):
+    class Meta:
+        model = BookTransport
+        fields = ['booking_date', 'num_cars']
+        widgets = {
+            'booking_date': forms.DateInput(attrs={'type': 'date'}),
+            'num_cars': forms.NumberInput(attrs={'min': 1}),
         }
