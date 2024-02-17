@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.shortcuts import render
-from .models import Venue, Catering, Entertainment, Guest, Transport, Wedding, Booking, BookCatering, BookEntertainment, \
+from .models import Venue, Catering, Entertainment, Guest, Transport, Booking, BookCatering, BookEntertainment, \
     BookTransport
 from django.db.models import Count
 from django.shortcuts import render, redirect

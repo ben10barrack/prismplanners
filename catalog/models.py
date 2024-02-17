@@ -98,37 +98,6 @@ class Transport(models.Model):
         return self.service_name
 
 
-class Wedding(models.Model):
-    client = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
-    venue = models.ForeignKey('Venue', on_delete=models.SET_NULL, null=True, blank=True)
-    catering = models.ForeignKey('Catering', on_delete=models.SET_NULL, null=True, blank=True)
-    transport = models.ForeignKey('Transport', on_delete=models.SET_NULL, null=True, blank=True)
-    entertainment = models.ForeignKey('Entertainment', on_delete=models.SET_NULL, null=True, blank=True)
-    guest_list = models.ManyToManyField('Guest', blank=True)
-    total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-
-    def calculate_final_price(self):
-        final_price = 0
-
-        if self.venue and self.venue.price:
-            final_price += self.venue.price
-
-        if self.catering and self.catering.rate_per_person:
-            final_price += self.catering.rate_per_person * self.guest_list.count()
-
-        if self.transport and self.transport.price:
-            final_price += float(self.transport.price)
-
-        if self.entertainment and self.entertainment.price:
-            final_price += float(self.entertainment.price)
-
-        return final_price
-
-    def save(self, *args, **kwargs):
-        self.total_price = self.calculate_final_price()
-        super().save(*args, **kwargs)
-
-
 class Booking(models.Model):
     STATUS_CHOICES = [
         ('P', 'Pending'),

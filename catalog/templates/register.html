@@ -1,17 +1,26 @@
 {% extends 'base_generic.html' %}
 
-{% block title %}Registration - Prism Planners{% endblock %}
+{% block title %}Prism Planners{% endblock %}
+
+{% block extra_css %}
+    {% load static %}
+
+{% endblock %}
 
 {% block content %}
-    <div class="title mb-4">
-        <h1 class="display-3">Prism Planners</h1>
-    </div>
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+    <div class="container">
+        <div class="registration-box">
+            <div class="title mb-4">
+                <h1 class="display-3">Prism Planners</h1>
+            </div>
 
-    <div class="col-sm-12">
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Register</button>
-        </form>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Register</button>
+            </form>
+        </div>
     </div>
 {% endblock %}
+
